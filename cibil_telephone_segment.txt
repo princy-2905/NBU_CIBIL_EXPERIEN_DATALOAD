@@ -1,0 +1,23 @@
+Drop table  nbu.cibil_telephone_segment;
+create table  nbu.cibil_telephone_segment
+(
+response_id varchar(32),
+id int,
+telephone varchar(max),
+tel_extn varchar(10),
+tel_type varchar(max),
+inserted_at date,
+updated_at date 
+);
+
+truncate table nbu.cibil_telephone_segment;
+insert into nbu.cibil_telephone_segment
+select
+response_id,
+ROW_NUMBER() over(order by response_id),
+telephone,
+tel_extn ,
+cast(tel_type as int),
+ getdate(),getdate()
+from nbu.stg_cibil_data
+where tel_type is not null

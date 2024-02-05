@@ -1,0 +1,13 @@
+
+Drop table nbu.scrub_mapping;
+create table nbu.scrub_mapping(
+"Member Reference" int,
+"Date Uploaded" VARCHAR(10),
+"Data Provider" Varchar(32),
+"party_code" Varchar(32)
+)
+
+
+
+COPY  "digital-revenue"."nbu"."scrub_mapping" FROM 's3://angelone-nbu/cibil/scrub-2023-12-05/scrub_mapping_2023-12-05.csv'
+IAM_ROLE 'arn:aws:iam::555445901246:role/analytics-redshift-glue-role' DELIMITER ','  ignoreheader 1 REMOVEQUOTES BLANKSASNULL  EMPTYASNULL

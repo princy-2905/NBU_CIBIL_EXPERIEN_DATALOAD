@@ -1,0 +1,21 @@
+Drop table nbu.cibil_name_segment;
+create table nbu.cibil_name_segment
+(
+response_id varchar(32),
+id int,
+name varchar(max) not null,
+dateofbirth date,
+gender int,
+inserted_at date,
+updated_at date
+) ;
+
+insert into nbu.cibil_name_segment
+select 
+response_id,
+ROW_NUMBER() over(order by response_id),
+name,
+to_date(LPAD(TRIM(BOTH ' ' FROM dateofbirth), 8, '0') , 'DDMMYYYY') as dateofbirth,
+cast(gender as int), getdate(),getdate()
+from nbu.stg_cibil_data
+where name is not null;

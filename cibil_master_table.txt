@@ -1,0 +1,50 @@
+Drop table nbu.cibil_master_table;
+create table nbu.cibil_master_table ( 
+id int ,
+response_id varchar(32),
+memberreference int,
+segment varchar(10),
+version int,
+enquirymemberid varchar(20),
+subjectreturncode int,
+enquirycontrolnumber varchar(30),
+dateprocessed date,
+timeprocessed varchar(max),
+inserted_at date,
+updated_at varchar(30),
+"date uploaded" varchar(30),
+"data provider" varchar(50),
+"party_code" varchar(50)
+)
+
+--select * from nbu.cibil_master_table
+truncate table nbu.cibil_master_table;
+insert into nbu.cibil_master_table
+with cte as(
+select distinct
+response_id,
+cast(memberreference as int),
+segment ,
+cast( version as int) ,
+ enquirymemberid  ,
+ cast( subjectreturncode as int) ,
+ enquirycontrolnumber  ,
+to_date(LPAD(TRIM(BOTH ' ' FROM dateprocessed), 8, '0') , 'DDMMYYYY') as dateprocessed,
+TO_CHAR(TO_TIMESTAMP(timeprocessed, 'HH24MISS'), 'HH24:MI:SS') AS timeprocessed,
+getdate() as inserted_at, getdate()  as updated_at 
+from nbu.stg_cibil_data
+),
+cte1 as
+(
+SELECT
+  ROW_NUMBER() OVER (ORDER BY response_id) AS id,
+  *
+FROM
+  cte
+)
+select cte1.id,cte1.response_id,cte1.memberreference,cte1.segment,cte1.version,cte1.enquirymemberid,cte1.subjectreturncode,cte1.enquirycontrolnumber,
+cte1.dateprocessed,cte1.timeprocessed,cast(cte1.inserted_at as date),cast(cte1.updated_at as date)
+ ,"date uploaded","data provider","party_code" from
+  cte1 left join nbu.scrub_mapping as scrub on cte1.memberreference = scrub."member reference"
+
+

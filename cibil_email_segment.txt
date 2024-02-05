@@ -1,0 +1,21 @@
+Drop table  nbu.cibil_email_segment;
+create table  nbu.cibil_email_segment
+(
+response_id varchar(32),
+id int ,
+email_id varchar(max),
+inserted_at date,
+updated_at date 
+);
+
+truncate table nbu.cibil_email_segment;
+insert into nbu.cibil_email_segment
+select
+response_id,
+ROW_NUMBER() over(order by response_id),
+cast ( email_id as varchar(50) ),
+ getdate(),getdate()
+ from nbu.stg_cibil_data
+where email_id is not null
+
+--select * from nbu.cibil_email_segment

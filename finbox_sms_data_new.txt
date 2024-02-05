@@ -1,0 +1,19 @@
+CREATE TABLE nbu.finbox_sms_data (
+    customer_id character varying(50) ENCODE lzo,
+    request_id character varying(50) ENCODE lzo,
+    data character varying(65535) ENCODE lzo,
+    created_at timestamp without time zone ENCODE az64,
+    updated_at timestamp without time zone ENCODE az64
+) DISTSTYLE AUTO;
+
+
+truncate table nbu.finbox_sms_data;
+insert into nbu.finbox_sms_data
+SELECT 
+CAST(customer_id as varchar(50)),
+CAST(request_id as varchar(50)),
+data,
+GETDATE() as created_at,
+GETDATE() as updated_at
+from 
+nbu.stg_finbox_sms_data;

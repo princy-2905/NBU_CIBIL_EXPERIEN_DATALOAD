@@ -1,0 +1,27 @@
+Drop table  nbu.cibil_identification_segment;
+create table nbu.cibil_identification_segment
+(
+id_type int not null,
+id varchar(100),
+issue_date date,
+expiration_date date,
+enr_enq_id varchar(100),
+inserted_at date,
+updated_at date,
+response_id varchar(32),
+identification_id int 
+)
+
+
+
+insert into nbu.cibil_identification_segment
+select 
+cast(id_type as int), id,
+to_date(LPAD(TRIM(BOTH ' ' FROM issue_date), 8, '0') , 'DDMMYYYY') as issue_date,
+to_date(LPAD(TRIM(BOTH ' ' FROM expiration_date), 8, '0') , 'DDMMYYYY') as expiration_date,
+enr_enq_id,getdate(),getdate() ,
+response_id,
+ROW_NUMBER() over(order by response_id)
+from nbu.stg_cibil_data
+where id_type is not null
+

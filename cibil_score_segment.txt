@@ -1,0 +1,61 @@
+drop table nbu.cibil_score_segment;
+
+create table nbu.cibil_score_segment
+(
+response_id varchar(32),
+scoreid int,
+scorename varchar(10) not null ,
+scorecardname integer ,
+scorecardversion integer ,
+scoredate date,
+score varchar(max) ,
+exclusioncode1 integer ,
+exclusioncode2 integer ,
+exclusioncode3 integer ,
+exclusioncode4 integer ,
+exclusioncode5 integer ,
+exclusioncode6 integer ,
+exclusioncode7 integer ,
+exclusioncode8 integer ,
+exclusioncode9 integer ,
+exclusioncode10 integer ,
+reasoncode1 integer ,
+reasoncode2 integer ,
+reasoncode3 integer ,
+reasoncode4 integer ,
+reasoncode5 integer ,
+errorcode integer ,
+inserted_at date,
+updated_at date 
+)
+
+
+
+insert into nbu.cibil_score_segment
+select
+response_id,
+ROW_NUMBER() over(order by response_id),
+cast ( scorename as varchar(10) ),
+cast ( scorecardname as integer ),
+cast ( scorecardversion as integer ),
+to_date(LPAD(TRIM(BOTH ' ' FROM scoredate), 8, '0') , 'DDMMYYYY') as scoredate,
+cast(REGEXP_REPLACE(score, '^0+', '') as integer) as score,
+cast ( exclusioncode1 as integer ),
+cast ( exclusioncode2 as integer ),
+cast ( exclusioncode3 as integer ),
+cast ( exclusioncode4 as integer ),
+cast ( exclusioncode5 as integer ),
+cast ( exclusioncode6 as integer ),
+cast ( exclusioncode7 as integer ),
+cast ( exclusioncode8 as integer ),
+cast ( exclusioncode9 as integer ),
+cast ( exclusioncode10 as integer ),
+cast ( reasoncode1 as integer ),
+cast ( reasoncode2 as integer ),
+cast ( reasoncode3 as integer ),
+cast ( reasoncode4 as integer ),
+cast ( reasoncode5 as integer ),
+cast ( errorcode as integer ), getdate(),getdate()
+from nbu.stg_cibil_data
+where scorecardname is not null and
+scorename is not null

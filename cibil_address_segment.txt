@@ -1,0 +1,41 @@
+truncate table nbu.cibil_address_segment;
+insert into nbu.cibil_address_segment
+select
+response_id,
+ROW_NUMBER() over(order by response_id),
+address ,
+cast( statecode as numeric) ,
+   regexp_replace(pincode, '[^0-9]', '')     ,
+cast( address_cat as numeric),
+cast( res_code as numeric),
+to_date(LPAD(TRIM(BOTH ' ' FROM datereported_address), 8, '0') , 'DDMMYYYY') as datereported_address,
+ getdate(),getdate()
+from nbu.stg_cibil_data
+where datereported_address is not null 
+and address_cat is not null 
+
+ 
+
+ --select REGEXP_replace('somestring-051-a92', '[^0-9]', '')
+ --select pincode,regexp_replace(pincode, '[^0-9]', ''),cast( regexp_replace(pincode, '[^0-9]', '') as numeric),is_integer(pincode)
+ --from nbu.stg_cibil_data
+ --where len(pincode)>6
+
+
+drop table nbu.cibil_address_segment;
+create table nbu.cibil_address_segment
+(
+     response_id varchar(32),
+    id int ,
+    address varchar(max) encode lzo,
+    statecode int encode az64,
+    pincode varchar(max) encode lzo,
+    address_cat int encode az64 not null ,
+    res_code int encode az64,
+    datereported_address date encode az64,
+    inserted_at date,
+     updated_at date 
+) DISTSTYLE AUTO;
+
+
+-- select * from  nbu.cibil_address_segment

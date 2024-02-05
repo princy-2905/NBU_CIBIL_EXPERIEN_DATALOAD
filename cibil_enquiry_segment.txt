@@ -1,0 +1,35 @@
+insert into nbu.cibil_enquiry_segment
+select 
+response_id,
+ROW_NUMBER() over(order by response_id),
+to_date(LPAD(TRIM(BOTH ' ' FROM dateofenquiry), 8, '0') , 'DDMMYYYY') as dateofenquiry,
+cast ( enquiringmembershortname as varchar(max) ),
+cast ( enquirypurpose as varchar(max) ),
+cast ( enquiryamount as integer ),
+cast ( disputeremarksline1 as varchar(max) ),
+cast ( disputeremarksline2 as varchar(max) ),
+cast ( disputeremarksline3 as varchar(max) ),
+cast ( disputeremarksline4 as varchar(max) ),
+cast ( disputeremarksline5 as varchar(max) ),
+getdate(),getdate()
+from nbu.stg_cibil_data
+where enquirypurpose is not null
+
+
+
+Drop table nbu.cibil_enquiry_segment;
+create table nbu.cibil_enquiry_segment(
+response_id varchar(32),
+id int ,
+dateofenquiry date ,
+enquiringmembershortname varchar(max) ,
+enquirypurpose varchar(max) not null ,
+enquiryamount integer ,
+disputeremarksline1 varchar(max) ,
+disputeremarksline2 varchar(max) ,
+disputeremarksline3 varchar(max) ,
+disputeremarksline4 varchar(max) ,
+disputeremarksline5 varchar(max) ,
+inserted_at date,
+updated_at date 
+)

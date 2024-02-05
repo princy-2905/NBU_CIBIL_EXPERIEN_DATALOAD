@@ -1,0 +1,47 @@
+truncate table nbu.cibil_employement_segment;
+
+insert into nbu.cibil_employement_segment
+select 
+response_id,
+ROW_NUMBER() over(order by response_id),
+cast ( account_type_empseg as integer ),
+to_date(LPAD(TRIM(BOTH ' ' FROM datereported_employment), 8, '0') , 'DDMMYYYY') as datereported_employment,
+cast ( occupation_code as integer ),
+cast ( income as integer ),
+cast ( net_gross_indicator as varchar(10) ),
+cast ( monthly_annual_indicator as varchar(10) ),
+cast ( dateofentry_errorcode_em as varchar(10) ),
+cast ( errorcode_em as varchar(10) ),
+cast ( date_cibilremarkscode_em as varchar(10) ),
+cast ( cibilremarkscode_em as varchar(10) ),
+cast ( disputeremarkscode_em as varchar(10) ),
+cast ( disputeremarkscode1_em as varchar(10) ),
+cast ( disputeremarkscode2_em as varchar(10) ),
+getdate(),
+getdate()
+from nbu.stg_cibil_data
+where account_type_empseg is not null
+
+
+Drop table nbu.cibil_employement_segment;
+create table nbu.cibil_employement_segment
+(
+response_id varchar(32),
+id int ,
+account_type_empseg integer not null,
+datereported_employment date,
+occupation_code integer ,
+income integer ,
+net_gross_indicator varchar(10) ,
+monthly_annual_indicator varchar(10) ,
+dateofentry_errorcode_em varchar(10) ,
+errorcode_em varchar(10) ,
+date_cibilremarkscode_em varchar(10) ,
+cibilremarkscode_em varchar(10) ,
+disputeremarkscode_em varchar(10) ,
+disputeremarkscode1_em varchar(10) ,
+disputeremarkscode2_em varchar(10) ,
+inserted_at date,
+updated_at date
+    
+)diststyle auto

@@ -1,0 +1,2 @@
+COPY  "digital-revenue"."nbu"."stg_cibil_data" FROM 's3://angelone-nbu/cibil/scrub_2023-08-18/SB93209999_CIRBATCH_17082023_Sample_Data_Angel_1L_18-08-2023-11-08-06_CV_STD_71_CIR.csv'
+IAM_ROLE 'arn:aws:iam::555445901246:role/analytics-redshift-glue-role' DELIMITER ','  ignoreheader 1 REMOVEQUOTES BLANKSASNULL  EMPTYASNULL
